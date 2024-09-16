@@ -1,7 +1,7 @@
 <template>
     <div class="flex min-h-full flex-1 flex-col justify-center p-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 class="text-center text-2xl font-bold text-gray-900">{{ route.query.type == 'admin' ? '¡Solo admin! Registrate aquí solo si eres admin' : route.query.type == 'designer' ? '¡Vendedor! Registrate y muestra tus imágenes al mundo' :  '¡Bienvenido! Crea tu cuenta y encuentra las mejores Imágenes del Mundo' }}</h2>
+            <h2 class="text-center text-2xl font-bold text-gray-900">{{ route.query.type == 'designer' ? '¡Hola Designer! Registrate' :  '¡Hola! Resgistrate ' }}</h2>
         </div>
 
         <div class="sm:mx-auto sm:w-full sm:max-w-sm pt-6 block text-sm font-medium text-red-600">
@@ -12,63 +12,63 @@
             <form class="space-y-4" @submit.prevent="register">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-900">Nombre de usuario</label>
-                    <div class="mt-2">
-                        <input id="username" name="username" type="text" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="username" name="username" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 justify-between">
                     <div>
                         <label for="first-name" class="block text-sm font-medium text-gray-900">Nombres</label>
-                        <div class="mt-2">
-                            <input id="first-name" name="first_name" type="text" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                        <div class="mt-1">
+                            <input id="first-name" name="first_name" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                         </div>
                     </div>
                     
                     <div>
                         <label for="last-name" class="block text-sm font-medium text-gray-900">Apellidos</label>
-                        <div class="mt-2">
-                            <input id="last-name" name="last_name" type="text" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                        <div class="mt-1">
+                            <input id="last-name" name="last_name" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                         </div>
                     </div>
                 </div>
                 
                 <div v-if="route.query.type == 'seller'">
                     <label for="identification" class="block text-sm font-medium text-gray-900">Identificación</label>
-                    <div class="mt-2">
-                        <input id="identification" name="identification" type="text" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="identification" name="identification" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-900">Email</label>
-                    <div class="mt-2">
-                        <input id="email" name="email" type="email" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-900">Contraseña</label>
-                    <div class="mt-2">
-                        <input id="password" name="password" type="password" required="true" autocomplete="off" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required="true" autocomplete="off" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
                 
                 <div class="pt-6">
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-teal-500 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">Registrarme</button>
+                    <button type="submit" class="flex w-full justify-center rounded-full bg-purple-500 px-4 py-2 font-bold text-white shadow-sm hover:opacity-75">Registrarme</button>
                 </div>
             </form>
 
-            <div class="mt-3">
-                <button @click="router.push({path: '/login'})" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm border hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">Iniciar sesión en mi cuenta</button>
+            <div class="my-4">
+                <button @click="router.push({path: '/login'})" class="flex w-full justify-center rounded-full px-4 py-2 text-gray-900 shadow-sm border hover:border-purple-500">Iniciar sesión en mi cuenta</button>
             </div>
 
-            <div class="mt-3" v-if="route.query.type == 'designer'">
-                <button @click="router.push({path: '/register', query: {type: 'client'}})" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm border hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">¡No soy Diseñador! Registrarme como otro tipo usuario</button>
+            <div class="my-4" v-if="route.query.type == 'designer'">
+                <button @click="router.push({path: '/register', query: {type: 'client'}})" class="flex w-full justify-center rounded-full px-4 py-2 text-gray-900 shadow-sm border hover:border-purple-500">¡No soy Diseñador! Registrarme como otro tipo usuario</button>
             </div>
 
-            <div class="mt-3" v-else="route.query.type == 'client'">
-                <button @click="router.push({path: '/register', query: {type: 'designer'}})" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-sm border hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">¡Soy Diseñador! Quiero registrarme</button>
+            <div class="my-4" v-else="route.query.type == 'client'">
+                <button @click="router.push({path: '/register', query: {type: 'designer'}})" class="flex w-full justify-center rounded-full px-4 py-2 text-gray-900 shadow-sm border hover:border-purple-500">¡Soy Diseñador! Quiero registrarme</button>
             </div>
         </div>
     </div>

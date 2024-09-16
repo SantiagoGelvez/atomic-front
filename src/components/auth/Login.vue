@@ -12,8 +12,8 @@
             <form class="space-y-6" @submit.prevent="login">
                 <div>
                     <label for="email-username" class="block text-sm font-medium text-gray-900">Nombre de usuario o email</label>
-                    <div class="mt-2">
-                        <input id="email-username" name="email-username" type="text" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="email-username" name="email-username" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
@@ -22,18 +22,18 @@
                         <label for="password" class="block text-sm font-medium text-gray-900">Contraseña</label>
                     </div>
 
-                    <div class="mt-2">
-                        <input id="password" name="password" type="password" required="true" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
                 <div class="pt-6">
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-teal-500 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">Ingresar</button>
+                    <button type="submit" class="flex w-full justify-center rounded-full bg-purple-500 px-4 py-2 font-bold text-white shadow-sm hover:opacity-75">Ingresar</button>
                 </div>
             </form>
 
-            <div class="mt-3">
-                <button @click="router.push({ path: '/register' })" class="flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm border hover:border-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">No tengo una cuenta ¡Registrarme!</button>
+            <div class="my-4">
+                <button @click="router.push({ path: '/register' })" class="flex w-full justify-center rounded-full px-4 py-2 text-gray-900 shadow-sm border hover:border-purple-500">No tengo una cuenta ¡Registrarme!</button>
             </div>
         </div>
     </div>
