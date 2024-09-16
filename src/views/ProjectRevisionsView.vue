@@ -49,75 +49,7 @@ interface Comment {
     replies: Comment[]
 }
 
-const comments = ref<Comment[]>([
-    {
-        uuid: '1',
-        text: 'Primer comentario principal',
-        image: null,
-        audio: null,
-        user: 'usuario_1',
-        reply_to: null,
-        x: 50,
-        y: 50,
-        revision: 'revision_uuid_1',
-        replies: [
-            {
-                uuid: '2',
-                text: 'Respuesta al comentario principal',
-                image: null,
-                audio: null,
-                user: 'usuario_2',
-                reply_to: '1',
-                revision: 'revision_uuid_1',
-                replies: [
-                    {
-                        uuid: '3',
-                        text: 'Subrespuesta al comentario',
-                        image: null,
-                        audio: null,
-                        user: 'usuario_3',
-                        reply_to: '2',
-                        revision: 'revision_uuid_1',
-                        replies: []
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        uuid: '4',
-        text: 'Segundo Comentario principal',
-        image: null,
-        audio: null,
-        user: 'usuario_1',
-        reply_to: null,
-        x: 90,
-        y: 85,
-        revision: 'revision_uuid_1',
-        replies: [
-            {
-                uuid: '5',
-                text: 'Respuesta al segundo comentario principal',
-                image: null,
-                audio: null,
-                user: 'usuario_2',
-                reply_to: '4',
-                revision: 'revision_uuid_1',
-                replies: []
-            }
-        ]
-    },
-    {
-        uuid: '6',
-        text: 'Tercer comentario principal',
-        image: null,
-        audio: null,
-        user: 'usuario_1',
-        reply_to: null,
-        revision: 'revision_uuid_1',
-        replies: []
-    }
-]);
+const comments = ref<Comment[]>([]);
 const imageContainer = ref<HTMLDivElement | null>(null);
 const showComment = ref<{ [key: string]: boolean }>({});
 const newReply = ref<{ [key: string]: string }>({});
@@ -165,6 +97,8 @@ const addReply = (parentUuid: string, replyText: string) => {
             text: replyText,
             image: null,
             audio: null,
+            x: null,
+            y: null,
             user: 'current_user',
             reply_to: parentUuid,
             revision: 'current_revision',

@@ -113,9 +113,4 @@ const register = async (e: Event) => {
         alertLoading.hide()
     }
 }
-
-async function getCompanies() {
-    const response = await apiClient.get('companies')
-    console.log(data)
-}
 </script>

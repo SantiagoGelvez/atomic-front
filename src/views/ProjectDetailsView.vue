@@ -26,17 +26,17 @@
                 <textarea v-model="newRevision.description" id="revisionDescription" class="border rounded p-2 w-full"></textarea>
             </div>
 
-            <div class="mb-2">
+            <!-- <div class="mb-2">
                 <label for="revisionFile" class="block font-semibold">Adjuntar Archivo:</label>
                 <input @change="handleFileUpload" type="file" id="revisionFile" class="border rounded p-2 w-full">
-            </div>
+            </div> -->
             
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Agregar Revisión</button>
         </form>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 
