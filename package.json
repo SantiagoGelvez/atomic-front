@@ -14,6 +14,7 @@
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.1",
     "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.1.5",
     "axios": "^1.7.7",
     "pinia": "^2.1.7",
     "sweetalert2": "^11.14.0",

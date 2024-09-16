@@ -1,7 +1,7 @@
 <template>
-    <header class="bg-purple-600 text-white p-4 flex justify-between items-center h-16">
+    <header class="p-4 flex justify-between items-center h-16 shadow z-[1]">
         <div class="text-lg font-bold">
-            <router-link to="/" class="text-purple-100 hover:text-white font-bold text-2xl">AtomicLab</router-link>
+            <router-link to="/" class="hover:text-purple-700 font-bold text-2xl">AtomicLab</router-link>
         </div>
 
         <div class="flex gap-2">

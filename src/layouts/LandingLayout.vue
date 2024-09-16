@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex flex-col w-full shadow-xl">
+    <div class="min-h-screen flex flex-col w-full">
         <ProjectsHeader />
         <main class="flex-grow h-full bg-gray-50" style="height: calc(100vh - 5rem);">
             <router-view />
