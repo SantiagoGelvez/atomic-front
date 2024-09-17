@@ -69,7 +69,6 @@ import Modal from '@/components/utils/HModal.vue';
 import axiosInstance from '@/plugins/axios';
 import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
-import { get } from 'node_modules/axios/index.cjs';
 
 const alertLoading = useAlertLoading();
 const newProjectModalIsOpen = ref(false);
