@@ -54,28 +54,35 @@
                     </div>
                 </div>
 
-                <HCombobox v-if="companies.length" :items="companies" :fixedOption="fixedOption" valueItem="uuid" valueText="name" @on-value-selected="(companySelected: Company) => companyAssigned = companySelected"/>
+                <div>
+                    <label for="companies" class="block text-sm font-medium text-gray-900">Empresa</label>
+                    <HCombobox id="companies" :items="companies" :fixedOption="fixedOption" valueItem="uuid" valueText="name" @on-value-selected="assignCompany"/>
+                </div>
 
-                <div v-if="companyAssigned?.uuid === '0'">
+                <hr>
+
+                <div v-if="companyAssigned?.uuid === 'New'">
                     <label for="companyName" class="block text-sm font-medium text-gray-900">Nombre de la empresa</label>
                     <div class="mt-1">
                         <input id="companyName" name="company_name" type="text" required="true" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
-                <div v-if="companyAssigned?.uuid === '0'">
+                <div v-if="companyAssigned?.uuid === 'New'">
                     <label for="companyDescription" class="block text-sm font-medium text-gray-900">Descripción de la empresa</label>
                     <div class="mt-1">
                         <input id="companyDescription" name="company_description" type="text" required="true" autocomplete="off" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
 
-                <div v-if="companyAssigned?.uuid === '0'">
+                <div v-if="companyAssigned?.uuid === 'New'">
                     <label for="companyWebsite" class="block text-sm font-medium text-gray-900">Website de la empresa</label>
                     <div class="mt-1">
                         <input id="companyWebsite" name="company_website" type="text" required="true" autocomplete="off" class="block w-full rounded-md border-0 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm" />
                     </div>
                 </div>
+
+                <hr>
                 
                 <div class="pt-6">
                     <button type="submit" class="flex w-full justify-center rounded-full bg-purple-500 px-4 py-2 font-bold text-white shadow-sm hover:opacity-75">Registrarme</button>
@@ -119,12 +126,16 @@ const router = useRouter()
 const user = useUserStore()
 const alertLoading = useAlertLoading()
 const companies = ref<Company[]>([])
-const companyAssigned = ref<Company | null>(null)
+// const companyAssigned = ref<Company | null>(null)
 
 const fixedOption = {
-    uuid: '0',
+    uuid: 'New',
     name: '¿No encuentras tu empresa? Registra una nueva',
+    website: '',
+    description: ''
 }
+
+const companyAssigned = ref<Company>(fixedOption)
 
 const authenticationError = ref('')
 
@@ -133,6 +144,7 @@ const register = async (e: Event) => {
 
     const formData = new FormData(e.target as HTMLFormElement)
     formData.append('is_designeer', route.query.type == 'designer' ? 'true' : 'false')
+    formData.append('company_uuid', companyAssigned.value.uuid)
     
     try {
         await user.register(formData)
@@ -147,39 +159,27 @@ const register = async (e: Event) => {
         })
 
     } catch (error: any) {
-        authenticationError.value = error?.response?.data?.email[0] ? 'El email ya se encuentra registrado' : 'Ha ocurrido un error, por favor intente nuevamente'
         alertLoading.hide()
+        authenticationError.value = error?.response?.data?.detail ? 'El email ya se encuentra registrado' : 'Ha ocurrido un error, por favor intenta nuevamente'
     }
 }       
 
 const getCompanies = async () => {
-    companies.value = [
-        {
-            uuid: '1',
-            name: 'Empresa 1',
-            website: 'https://empresa1.com',
-            description: 'Descripción de la empresa 1'
-        },
-        {
-            uuid: '2',
-            name: 'Empresa 2',
-            website: 'https://empresa2.com',
-            description: 'Descripción de la empresa 2'
-        },
-        {
-            uuid: '3',
-            name: 'Empresa 3',
-            website: 'https://empresa3.com',
-            description: 'Descripción de la empresa 3'
-        },
-    ]
-    // try {
-    //     const { data } = await apiClient.get('/companies')
-    //     return data
-    // } catch (error) {
-    //     console.error(error)
-    // }
+    try {
+        const response = await apiClient.get('companies')
+        companies.value = response.data
+    } catch (error: any) {
+        Swal.fire({
+            title: '¡Error!',
+            text: 'Ha ocurrido un error al cargar las empresas, por favor intente nuevamente',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+        })
+    }
+}
 
+const assignCompany = (company: any) => {
+    companyAssigned.value = company
 }
 
 getCompanies()

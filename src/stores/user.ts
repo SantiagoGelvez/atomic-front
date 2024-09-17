@@ -42,7 +42,7 @@ export const useUserStore = defineStore('user', {
         },
 
         async logout() {
-            await apiClient.post('user/logout')
+            await apiClient.post('users/logout')
 
             this.$reset()
 
