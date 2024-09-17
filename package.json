@@ -10,7 +10,12 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "custom_deploy": "npm run stop_pm2 && npm run stop_nginx && npm run pull && npm install && npm run build-only && npm run restart_pm2 && npm run restart_nginx && echo 'Deployed!'"
+    "custom_deploy": "npm run stop_pm2 && npm run stop_nginx && npm run pull && npm install && npm run build-only && npm run restart_pm2 && npm run restart_nginx && echo 'Deployed!'",
+    "pull": "git pull origin main",
+    "stop_pm2": "pm2 stop all",
+    "stop_nginx": "sudo systemctl stop nginx",
+    "restart_pm2": "pm2 restart all",
+    "restart_nginx": "sudo systemctl restart nginx"
   },
   "dependencies": {
     "@headlessui/tailwindcss": "^0.2.1",
