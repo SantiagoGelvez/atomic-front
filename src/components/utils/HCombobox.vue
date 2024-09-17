@@ -39,7 +39,6 @@
 import { ref, computed, watch } from 'vue'
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import { all } from 'node_modules/axios/index.cjs';
 
 interface Item {
     [key: string]: any;
