@@ -1,9 +1,8 @@
 <template>
     <div class="flex h-screen">
         <div class="flex-1 flex items-center justify-center">
-
             <div class="w-fit h-fit max-w-4xl max-h-4xl overflow-hidden flex items-center justify-center relative" @click="handleClick" ref="imageContainer">
-                <img src="https://via.placeholder.com/800" alt="Example Image" class="object-contain"/>
+                <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
                 
                 <!-- Los contenedores con v-if deben ocultarse al hacer click por fuera del contenedor padre, el que tiene handleclick -->
                 <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
@@ -35,6 +34,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import CommentList from '@/components/CommentList.vue';
+import { useRoute } from 'vue-router';
+import axiosInstance from '@/plugins/axios';
+import { useAlertLoading } from '@/composables/useAlert';
+import Swal from 'sweetalert2';
+
 
 interface Comment {
     uuid: string;
@@ -49,16 +53,37 @@ interface Comment {
     replies: Comment[]
 }
 
+const route = useRoute();
+const alertLoading = useAlertLoading();
+
 const comments = ref<Comment[]>([]);
 const imageContainer = ref<HTMLDivElement | null>(null);
 const showComment = ref<{ [key: string]: boolean }>({});
 const newReply = ref<{ [key: string]: string }>({});
+const revisionDetailed = ref<any>(null);
+
+const revisionUUID = route.params.revisionUUID;
 
 const newComment = ref<{
     text: string,
     x: number | null,
     y: number | null
 }>({ text: '', x: null, y: null });
+
+const getRevisionDetail = async () => {
+    alertLoading.show();
+    try {
+        const response = await axiosInstance.get(`/revisions/${revisionUUID}`);
+        revisionDetailed.value = response.data;
+        // comments.value = response.data.comments;
+    } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al cargar la revisión', 'error');
+    } finally {
+        alertLoading.hide();
+    }
+};
+
+getRevisionDetail()
 
 const addComment = () => {
     if (newComment.value.text.trim() !== '') {

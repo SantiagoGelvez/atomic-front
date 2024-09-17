@@ -19,11 +19,11 @@
         </div>
 
         <div v-else class="flex gap-2">
-            <button class="text-white font-bold py-2 px-4 rounded-full border bg-purple-700 hover:opacity-75" @click="router.push('login')">
+            <button class="text-white font-bold py-2 px-4 rounded-full border bg-purple-700 hover:opacity-75" @click="router.push({path: '/login'})">
                 Iniciar Sesión
             </button>
             
-            <button class="text-zinc-950 font-bold py-2 px-4 rounded-full border bg-purple-100 hover:opacity-75" @click="router.push('register')">
+            <button class="text-zinc-950 font-bold py-2 px-4 rounded-full border bg-purple-100 hover:opacity-75" @click="router.push({path: '/register'})">
                 Registrarme
             </button>
         </div>
