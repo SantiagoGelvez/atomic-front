@@ -66,15 +66,23 @@ router.beforeEach( async (to, from, next) => {
     AlertLoading.show()
     await userStore.checkAuth()
     AlertLoading.hide()
-
-    if (to.name === 'home') {
+    
+    if (to.name === 'landing' || to.name === 'login' || to.name === 'register') {
         if (userStore.isAuthenticated) {
             next({ name: 'projects-list' })
         } else {
-            next({ name: 'landing' })
+            next()
         }
     } else {
-        next()
+        if (userStore.isAuthenticated) {
+            if (to.name === 'home') {
+                next({ name: 'projects-list' })
+            } else {
+                next()
+            }
+        } else {
+            next({ name: 'landing' })
+        }
     }
 })
 

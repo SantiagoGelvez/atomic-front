@@ -1,18 +1,18 @@
 <template>
-    <div class="flex h-screen">
-        <div class="flex-1 flex items-center justify-center">
-            <div class="w-fit h-fit max-w-4xl max-h-4xl overflow-hidden flex items-center justify-center relative" @click="handleClick" ref="imageContainer">
+    <div class="flex h-full bg-gray-100" v-if="revisionDetailed">
+        <div class="flex-1 flex p-4 bg-white">
+            <div class="w-fit h-fit max-w-4xl max-h-4xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
                 <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
                 
                 <!-- Los contenedores con v-if deben ocultarse al hacer click por fuera del contenedor padre, el que tiene handleclick -->
                 <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
                     <div class="p-2 bg-white border border-gray-300 rounded">
-                        <input v-model="newComment.text" @keyup.enter="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" type="text" placeholder="Add a comment" class="w-full p-2 border border-gray-300 rounded" ref="floatingAddComment"/>
+                        <input v-model="newComment.text" @keyup.enter="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" type="text" placeholder="Add a comment" class="w-80 p-2 border border-gray-300 rounded" ref="floatingAddComment"/>
                     </div>
                 </div>
 
-                <div v-for="comment in comments.filter((c) => c.x && c.y)" :key="comment.uuid" class="absolute " :style="{ top: comment.y + '%', left: comment.x + '%' }" @click.stop="openComment(comment.uuid)">
-                    <div class="p-2 bg-white border border-gray-300 rounded">
+                <div v-for="comment in comments.filter((c) => c.x && c.y)" :key="comment.uuid" class="absolute" :style="{ top: comment.y + '%', left: comment.x + '%' }" @click.stop="openComment(comment.uuid)">
+                    <div class="p-4 bg-purple-500 border border-gray-300 rounded-full ">
                         <div v-if="showComment[comment.uuid]">
                             <h1 class="font-semibold">{{ comment.user }}</h1>
                             <hr>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="w-2/6 p-4 bg-gray-100 overflow-y-auto">
+        <div class="w-2/6 p-4 h-full overflow-auto">
             <input v-model="newComment.text" @keyup.enter="addComment" type="text" placeholder="Add a comment" class="w-full p-2 border border-gray-300 rounded"/>
             <CommentList :comments="comments" @add-reply="addReply" />
         </div>

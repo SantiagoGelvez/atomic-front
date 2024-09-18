@@ -1,11 +1,10 @@
 <template>
-    <header class="p-4 flex justify-between items-center h-16 shadow z-[1]">
+    <header class="p-4 flex justify-between items-center h-[4rem] shadow z-[1]">
         <div class="text-lg font-bold">
             <router-link to="/" class="hover:text-purple-700 font-bold text-xl">AtomicLab</router-link>
         </div>
 
         <div v-if="userStore.isAuthenticated">
-            <!-- Nombre y foto de perfil -->
             <div class="flex items-center gap-2">
                 <!-- <img :src="" alt="Foto de perfil" class="w-8 h-8 rounded-full"> -->
                 <span class="font-semibold">

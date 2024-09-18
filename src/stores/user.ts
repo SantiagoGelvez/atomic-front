@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', {
 
             this.$reset()
 
-            router.push({ name: 'home' })
+            router.push({ path: '/' })
         },
 
         async checkAuth() {
