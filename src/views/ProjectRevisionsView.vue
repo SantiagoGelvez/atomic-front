@@ -53,8 +53,6 @@ import axiosInstance from '@/plugins/axios';
 import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
 import InputComplete from '@/components/utils/InputComplete.vue';
-import { all } from 'node_modules/axios/index.cjs';
-
 
 interface Comment {
     uuid: string;
