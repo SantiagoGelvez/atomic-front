@@ -1,5 +1,5 @@
 <template>
-    <div class="container mx-auto px-20 py-8">
+    <div class="mx-auto px-20 py-8">
         <h1 class="text-2xl font-bold mb-4">Detalles del Proyecto</h1>
         
         <h2 class="text-xl font-bold mt-8 mb-4">Información General</h2>

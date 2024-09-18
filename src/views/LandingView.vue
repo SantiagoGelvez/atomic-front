@@ -6,7 +6,7 @@
             <p class="mt-4 text-xl">Conecta con los mejores diseñadores web para tus proyectos</p>
         </div>
         
-        <div class="container mx-auto px-24">
+        <div class="mx-auto px-24">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
                 <div v-for="card in cards" class="bg-white p-8 rounded-lg shadow-md">
                     <img :src="card.image" :alt="card.title" class="w-full h-80 object-cover rounded mb-4">

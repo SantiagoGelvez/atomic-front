@@ -1,31 +1,45 @@
 <template>
     <div class="flex h-full bg-gray-100" v-if="revisionDetailed">
-        <div class="flex-1 flex p-4 bg-white">
-            <div class="w-fit h-fit max-w-4xl max-h-4xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
+        <div class="flex-1 flex flex-col p-4 bg-white">
+            <div class="w-fit h-fit max-w-7xl max-h-7xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
                 <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
                 
-                <!-- Los contenedores con v-if deben ocultarse al hacer click por fuera del contenedor padre, el que tiene handleclick -->
                 <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
-                    <div class="p-2 bg-white border border-gray-300 rounded">
-                        <input v-model="newComment.text" @keyup.enter="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" type="text" placeholder="Add a comment" class="w-80 p-2 border border-gray-300 rounded" ref="floatingAddComment"/>
+                    <div class="p-2 bg-white border border-gray-300 rounded-xl">
+                        <InputComplete @send="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" ref="floatingAddComment"></InputComplete>
                     </div>
                 </div>
 
                 <div v-for="comment in comments.filter((c) => c.x && c.y)" :key="comment.uuid" class="absolute" :style="{ top: comment.y + '%', left: comment.x + '%' }" @click.stop="openComment(comment.uuid)">
-                    <div class="p-4 bg-purple-500 border border-gray-300 rounded-full ">
+                    <div class="p-4 border-2 border-gray-300 " :class="{'bg-white rounded-lg': showComment[comment.uuid], 'bg-purple-500 rounded-full': !showComment[comment.uuid]}">
                         <div v-if="showComment[comment.uuid]">
-                            <h1 class="font-semibold">{{ comment.user }}</h1>
+                            <h1 class="font-semibold">{{ `${comment.user.first_name} ${comment.user.last_name}` }}</h1>
+                            
                             <hr>
                             <p>{{ comment.text }}</p>
-                            <input type="text" @keydown.esc="showComment[comment.uuid] = false" @keyup.enter="addReply(comment.uuid, newReply[comment.uuid])" v-model="newReply[comment.uuid]" class="w-full p-1 border border-gray-300 rounded">
+                            
+                            <p>
+                                <img v-if="comment.image_s3_key" :src="comment.image_s3_key" alt="Imagen" class="w-32 h-32" />
+                                <audio v-if="comment.audio_s3_key" :src="comment.audio_s3_key" controls></audio>
+                            </p>
+                            
+                            <InputComplete @send="(formData) => addReply(comment.uuid, formData)"></InputComplete>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="mt-4 flex justify-end">
+                <button class="bg-purple-500 hover:opacity-75 text-white font-bold py-2 px-4 rounded-full" @click="submitRevision">
+                    Guardar Revisión
+                </button>
+            </div>
         </div>
 
-        <div class="w-2/6 p-4 h-full overflow-auto">
-            <input v-model="newComment.text" @keyup.enter="addComment" type="text" placeholder="Add a comment" class="w-full p-2 border border-gray-300 rounded"/>
+        <div class="w-96 p-4 h-full overflow-auto">
+            <h1 class="text-xl font-semibold mb-2">Comentarios</h1>
+
+            <p v-if="comments.length === 0">No hay comentarios</p>
             <CommentList :comments="comments" @add-reply="addReply" />
         </div>
     </div>
@@ -38,14 +52,18 @@ import { useRoute } from 'vue-router';
 import axiosInstance from '@/plugins/axios';
 import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
+import InputComplete from '@/components/utils/InputComplete.vue';
+import { all } from 'node_modules/axios/index.cjs';
 
 
 interface Comment {
     uuid: string;
     text: string;
     image: string | null;
+    image_s3_key: any | null;
     audio: string | null;
-    user: string;
+    audio_s3_key: any | null;
+    user: any;
     reply_to: string | null;
     x: number | null;
     y: number | null;
@@ -61,6 +79,7 @@ const imageContainer = ref<HTMLDivElement | null>(null);
 const showComment = ref<{ [key: string]: boolean }>({});
 const newReply = ref<{ [key: string]: string }>({});
 const revisionDetailed = ref<any>(null);
+const allUserComments = ref<Comment[]>([]);
 
 const revisionUUID = route.params.revisionUUID;
 
@@ -75,7 +94,6 @@ const getRevisionDetail = async () => {
     try {
         const response = await axiosInstance.get(`/revisions/${revisionUUID}`);
         revisionDetailed.value = response.data;
-        // comments.value = response.data.comments;
     } catch (error) {
         Swal.fire('Error', 'Ocurrió un error al cargar la revisión', 'error');
     } finally {
@@ -83,56 +101,21 @@ const getRevisionDetail = async () => {
     }
 };
 
+const getComments = async () => {
+    alertLoading.show();
+    try {
+        const response = await axiosInstance.get(`/revisions/${revisionUUID}/comments`);
+        comments.value = response.data;
+    } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al cargar los comentarios', 'error');
+    } finally {
+        alertLoading.hide();
+    }
+};
+
+getComments();
+
 getRevisionDetail()
-
-const addComment = () => {
-    if (newComment.value.text.trim() !== '') {
-        comments.value.unshift({
-            uuid: Date.now().toString(),
-            text: newComment.value.text,
-            image: null,
-            audio: null,
-            user: 'current_user',
-            x: newComment.value.x,
-            y: newComment.value.y,
-            reply_to: null,
-            revision: 'current_revision',
-            replies: []
-        });
-        newComment.value.text = '';
-        newComment.value.x = null;
-        newComment.value.y = null;
-    }
-};
-
-const addReply = (parentUuid: string, replyText: string) => {
-    const findComment = (comments: Comment[], uuid: string): Comment | null => {
-        for (const comment of comments) {
-            if (comment.uuid === uuid) return comment;
-            const found = findComment(comment.replies, uuid);
-            if (found) return found;
-        }
-        return null;
-    };
-
-    const parentComment = findComment(comments.value, parentUuid);
-    if (parentComment) {
-        parentComment.replies.push({
-            uuid: Date.now().toString(),
-            text: replyText,
-            image: null,
-            audio: null,
-            x: null,
-            y: null,
-            user: 'current_user',
-            reply_to: parentUuid,
-            revision: 'current_revision',
-            replies: []
-        });
-
-        newReply.value[parentUuid] = '';
-    }
-};
 
 const handleClick = (e: MouseEvent) => {
     showComment.value = {};
@@ -144,6 +127,83 @@ const handleClick = (e: MouseEvent) => {
 
         newComment.value.x = x;
         newComment.value.y = y;
+    }
+};
+
+const addComment = (formData: FormData) => {
+    let message: string | null = null;
+    let imageUrl: string | null = null;
+    let audioUrl: string | null = null;    
+    
+    if (formData.get('message')) {
+        message = formData.get('message') as string
+    }
+    
+    if (formData.get('image')) {
+        const image = formData.get('image') as File
+        imageUrl = URL.createObjectURL(image)
+    }
+    
+    if (formData.get('audio')) {
+        const audio = formData.get('audio') as Blob
+        audioUrl = URL.createObjectURL(audio)
+    }
+
+    comments.value.unshift({
+        uuid: Date.now().toString(),
+        text: message || '',
+        image: imageUrl || null,
+        image_s3_key: formData.get('image'),
+        audio: audioUrl || null,
+        audio_s3_key: formData.get('audio'),
+        user: 'current_user',
+        x: newComment.value.x,
+        y: newComment.value.y,
+        reply_to: null,
+        revision: 'current_revision',
+        replies: []
+    });
+
+    allUserComments.value.push(comments.value[0]);
+
+    newComment.value.text = '';
+    newComment.value.x = null;
+    newComment.value.y = null;
+};
+
+const addReply = (parentUuid: string, formData: FormData) => {
+    const findComment = (comments: Comment[], uuid: string): Comment | null => {
+        for (const comment of comments) {
+            if (comment.uuid === uuid) return comment;
+
+            if (comment.replies) {
+                const found = findComment(comment.replies, uuid);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
+    const parentComment = findComment(comments.value, parentUuid);
+    if (parentComment) {
+        parentComment.replies.push({
+            uuid: Date.now().toString(),
+            text: formData.get('message') as string,
+            image: formData.get('image') ? URL.createObjectURL(formData.get('image') as File) : null,
+            image_s3_key: formData.get('image'),
+            audio: formData.get('audio') ? URL.createObjectURL(formData.get('audio') as Blob) : null,
+            audio_s3_key: formData.get('audio'),
+            x: null,
+            y: null,
+            user: 'current_user',
+            reply_to: parentUuid,
+            revision: 'current_revision',
+            replies: []
+        });
+
+        allUserComments.value.push(parentComment.replies[parentComment.replies.length - 1]);
+
+        newReply.value[parentUuid] = '';
     }
 };
 
@@ -171,4 +231,34 @@ onMounted(() => {
         }
     });
 });
+
+const submitRevision = async () => {
+    alertLoading.show();
+
+    allUserComments.value.forEach(async (comment) => {
+        await addUserComments(comment);
+    });
+
+    Swal.fire('Revisión Guardada', 'La revisión ha sido guardada exitosamente', 'success');
+};
+
+const addUserComments = async (comment: Comment) => {
+    const formData = new FormData();
+    formData.append('text', comment.text);
+    formData.append('x', comment.x?.toString() || '');
+    formData.append('y', comment.y?.toString() || '');
+    formData.append('image_s3_key', comment.image_s3_key || '');
+    formData.append('audio_s3_key', comment.audio_s3_key || '');
+    formData.append('reply_to', comment.reply_to || '');
+
+    try {
+        await axiosInstance.post(`/revisions/${revisionUUID}/comments`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    } catch (error) {
+        Swal.fire('Error', 'Ocurrió un error al guardar la revisión', 'error');
+    }
+}
 </script>

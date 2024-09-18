@@ -1,5 +1,5 @@
 <template>
-    <div class="container mx-auto px-20 py-8">
+    <div class="mx-auto px-20 py-8">
         <h1 class="text-2xl font-bold mb-8">Lista de Proyectos</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
