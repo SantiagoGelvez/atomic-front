@@ -1,29 +1,37 @@
 <template>
     <div class="flex h-full bg-gray-100" v-if="revisionDetailed">
-        <div class="flex-1 flex flex-col p-4 bg-white">
-            <div class="w-fit h-fit max-w-7xl max-h-7xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
-                <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
-                
-                <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
-                    <div class="p-2 bg-white border border-gray-300 rounded-xl">
-                        <InputComplete @send="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" ref="floatingAddComment"></InputComplete>
-                    </div>
-                </div>
+        <div class="flex-1 flex flex-col p-4 bg-white w-full align-center">
+            <div class="flex items-center mb-4 gap-6" >
+                <ArrowLeftIcon class="w-6 h-6 text-purple-500 cursor-pointer" @click="router.back()"/>
 
-                <div v-for="comment in comments.filter((c) => c.x && c.y)" :key="comment.uuid" class="absolute" :style="{ top: comment.y + '%', left: comment.x + '%' }" @click.stop="openComment(comment.uuid)">
-                    <div class="p-4 border-2 border-gray-300 " :class="{'bg-white rounded-lg': showComment[comment.uuid], 'bg-purple-500 rounded-full': !showComment[comment.uuid]}">
-                        <div v-if="showComment[comment.uuid]">
-                            <h1 class="font-semibold">{{ `${comment.user.first_name} ${comment.user.last_name}` }}</h1>
-                            
-                            <hr>
-                            <p>{{ comment.text }}</p>
-                            
-                            <p>
-                                <img v-if="comment.image_s3_key" :src="comment.image_s3_key" alt="Imagen" class="w-32 h-32" />
-                                <audio v-if="comment.audio_s3_key" :src="comment.audio_s3_key" controls></audio>
-                            </p>
-                            
-                            <InputComplete @send="(formData) => addReply(comment.uuid, formData)"></InputComplete>
+                <h1 class="text-2xl font-bold ml-2">Revisión # {{ revisionDetailed.attempt }}</h1>
+            </div>
+
+            <div class="w-full flex justify-center">
+                <div class="w-fit h-fit max-w-7xl max-h-7xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
+                    <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
+                    
+                    <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
+                        <div class="p-2 bg-white border border-gray-300 rounded-xl z-10 relative">
+                            <InputComplete :placeholder="'Agrega un comentario...'" @send="addComment" @keydown.esc="newComment={ text: '', x: null, y: null }" ref="floatingAddComment"></InputComplete>
+                        </div>
+                    </div>
+    
+                    <div v-for="comment in comments.filter((c) => c.x && c.y)" :key="comment.uuid" class="absolute" :style="{ top: comment.y + '%', left: comment.x + '%' }" @click.stop="openComment(comment.uuid)">
+                        <div class="p-4 border-2 border-gray-300 " :class="{'bg-white rounded-lg': showComment[comment.uuid], 'bg-purple-500 rounded-b-full rounded-r-full': !showComment[comment.uuid]}">
+                            <div v-if="showComment[comment.uuid]">
+                                <h1 class="font-semibold">{{ `${comment.user.first_name} ${comment.user.last_name}` }}</h1>
+                                
+                                <p>{{ comment.text }}</p>
+                                
+                                <p>
+                                    <img v-if="comment.image_s3_key" :src="comment.image_s3_key" alt="Imagen" class="w-32 h-32" />
+                                    
+                                    <audio v-if="comment.audio_s3_key" :src="comment.audio_s3_key" controls></audio>
+                                </p>
+                                
+                                <InputComplete :placeholder="'Responder...'" @send="(formData) => addReply(comment.uuid, formData)"></InputComplete>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,10 +56,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import CommentList from '@/components/CommentList.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '@/plugins/axios';
 import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
+import { ArrowLeftIcon } from '@heroicons/vue/16/solid';
 import InputComplete from '@/components/utils/InputComplete.vue';
 
 interface Comment {
@@ -70,6 +79,7 @@ interface Comment {
 }
 
 const route = useRoute();
+const router = useRouter();
 const alertLoading = useAlertLoading();
 
 const comments = ref<Comment[]>([]);

@@ -1,6 +1,9 @@
 <template>
     <div class="mx-auto px-20 py-8">
-        <h1 class="text-2xl font-bold mb-4">Detalles del Proyecto</h1>
+        <div class="flex items-center gap-6 mb-8">
+            <ArrowLeftIcon class="w-6 h-6 text-purple-500 cursor-pointer" @click="router.back()" />
+            <h1 class="text-2xl font-bold">Detalles del Proyecto</h1>
+        </div>
         
         <h2 class="text-xl font-bold mt-8 mb-4">Información General</h2>
 
@@ -8,23 +11,25 @@
             <h2 class="text-xl font-semibold mb-4">{{ projectDetails.name }}</h2>
             <p class="text-gray-700 mb-2">{{ projectDetails.description }}</p>
             <p class="text-gray-700 mb-2 text-sm">Creado por: {{ projectDetails.creator?.first_name }} {{ projectDetails.creator?.last_name }}</p>
-            <p class="text-gray-700 mb-4 text-sm">Fecha de Creación: {{ projectDetails.created_at }}</p>
+            <p class="text-gray-700 mb-4 text-sm">Fecha de Creación: {{ formatDate(projectDetails.created_at) }}</p>
         </div>
 
         <h2 class="text-xl font-bold mt-8 mb-4">Revisiones del Proyecto</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="revision in revisions" :key="revision.uuid" class="bg-white shadow-md rounded-lg p-6">
+            <div v-for="revision in revisions" :key="revision.uuid" class="bg-white border-2 shadow-md rounded-lg p-6 flex flex-col justify-between hover:shadow-lg hover:border-purple-200">
                 <h2 class="text-xl font-semibold mb-2">{{ `Revision No. ${revision.attempt}` }}</h2>
 
-                <img :src="revision.file_s3_key" alt="">
+                <img :src="revision.file_s3_key" alt="" @click="router.push({path: '/projects/' + projectUUID + '/revisions/' + revision.uuid})" class="cursor-pointer">
 
-                <p class="text-gray-700 mb-4">{{ revision.created_at }}</p>
-                
-                <div class="flex justify-end">
-                    <router-link :to="'/projects/' + projectUUID + '/revisions/' + revision.uuid" class="bg-purple-500 hover:opacity-75 text-white font-bold py-2 px-4 rounded-full">
-                        Ver Detalles
-                    </router-link>
+                <div class="flex justify-between mt-4">
+                    <p class="text-gray-700 my-auto">{{ formatDate(revision.created_at) }}</p>
+                    
+                    <div class="flex justify-end">
+                        <router-link :to="'/projects/' + projectUUID + '/revisions/' + revision.uuid" class="bg-purple-500 hover:opacity-75 text-white font-bold py-2 px-4 rounded-full">
+                            Ver Detalles
+                        </router-link>
+                    </div>
                 </div>
             </div>
 
@@ -70,15 +75,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '@/plugins/axios';
+import { ArrowLeftIcon } from '@heroicons/vue/20/solid';
+import { useDateFormatter } from '@/composables/useDateFormatter';
 import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
 import Modal from '@/components/utils/HModal.vue';
 
 const alertLoading = useAlertLoading();
+const { formatDate } = useDateFormatter();
 
 const route = useRoute();
+const router = useRouter();
 const projectUUID = route.params.projectUUID;
 const newRevisionModalIsOpen = ref(false);
 const newRevisionForm = ref<any>(null);

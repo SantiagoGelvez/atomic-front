@@ -1,15 +1,15 @@
 <template>
-    <div class="items-center space-x-2">
+    <div class="items-center space-x-2 border rounded p-2 w-full">
 
         <div class="flex flex-col justify-center">
             <img v-if="imageUrl" :src="imageUrl" alt="Imagen" class="w-32 h-32 mx-auto pb-2" />
             <audio v-if="audioUrl" :src="audioUrl" controls class="pb-2"></audio>
         </div>
 
-        <div class="flex gap-2">
+        <div class="flex">
             <textarea v-model="message" 
-            class="w-full resize-none rounded-lg border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-            placeholder="Escribe un mensaje..." 
+            class="w-full resize-none rounded-lg border-gray-300 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+            :placeholder="placeholder" 
             rows="1"></textarea>
             
             <!-- Botón para subir imagen -->
@@ -33,11 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, defineProps } from 'vue'
+import { ref } from 'vue'
 import { MicrophoneIcon, PhotoIcon, PaperAirplaneIcon, StopCircleIcon } from '@heroicons/vue/16/solid';
 
 const props = defineProps<{
-    initialMessage?: string
+    initialMessage?: string,
+    placeholder?: string
 }>()
 
 const emits = defineEmits<{

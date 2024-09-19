@@ -1,28 +1,30 @@
 <template>
     <div>
-        <ul>
-            <li v-for="comment in comments" :key="comment.uuid" class="mb-4">
-                <div class="p-2 border border-gray-300 rounded">
+        <ul class="">
+            <li v-for="comment in comments" :key="comment.uuid" class="bg-white rounded mb-4">
+                <div class="p-2">
                     <p><strong>{{ `${comment.user.first_name} ${comment.user.last_name}` }}</strong>: {{ comment.text }}</p>
                     <p>
                         <img v-if="comment.image_s3_key" :src="comment.image_s3_key" alt="Imagen" class="w-32 h-32" />
-                        <audio v-if="comment.audio_s3_key" :src="comment.audio_s3_key" controls></audio>
+                        <audio v-if="comment.audio_s3_key" :src="comment.audio_s3_key" class="w-full h-8" controls></audio>
                     </p>
                 </div>
                 
-                <ul v-if="comment.replies" class="ml-4 mt-2">
-                    <li v-for="reply in comment.replies" :key="reply.uuid" class="p-2 border border-gray-300 rounded">
+                <ul v-if="comment.replies" class="ml-12">
+                    <li v-for="reply in comment.replies" :key="reply.uuid" class="p-2">
                         <p><strong>{{ `${reply.user.first_name} ${reply.user.last_name}` }}</strong>: {{ reply.text }}</p>
                         
                         <p>
                             <img v-if="reply.image_s3_key" :src="reply.image_s3_key" alt="Imagen" class="w-32 h-32" />
-                            <audio v-if="reply.audio_s3_key" :src="reply.audio_s3_key" controls></audio>
+                            <audio v-if="reply.audio_s3_key" :src="reply.audio_s3_key" class="w-full h-8" controls></audio>
                         </p>
                     </li>
                 </ul>
 
-                <div class="flex justify-end gap-2 w-full">
-                    <InputComplete @send="(formData: FormData) => submitReply(formData, comment.uuid)"></InputComplete>
+                <hr>
+
+                <div class="flex justify-end p-2">
+                    <InputComplete :placeholder="'Responder...'" @send="(formData: FormData) => submitReply(formData, comment.uuid)"></InputComplete>
                 </div>
             </li>
         </ul>
