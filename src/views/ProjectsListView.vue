@@ -3,6 +3,12 @@
         <h1 class="text-2xl font-bold mb-8">Lista de Proyectos</h1>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white shadow-md rounded-lg p-6 flex items-center justify-center hover:opacity-75 cursor-pointer" @click="newProjectModalIsOpen = true">
+                <span class="py-2 px-4 rounded-full font-bold">
+                    + Crear Nuevo Proyecto
+                </span>
+            </div>
+
             <div v-for="project in projects" :key="project.uuid" class="bg-white shadow-md rounded-lg p-6">
                 <h2 class="text-xl font-semibold mb-2">{{ project.name }}</h2>
 
@@ -13,14 +19,6 @@
                         Ver Detalles
                     </router-link>
                 </div>
-            </div>
-
-            <!-- Agrega más proyectos según sea necesario -->
-
-            <div class="bg-white shadow-md rounded-lg p-6 flex items-center justify-center hover:opacity-75 cursor-pointer" @click="newProjectModalIsOpen = true">
-                <span class="py-2 px-4 rounded-full font-bold">
-                    + Crear Nuevo Proyecto
-                </span>
             </div>
         </div>
     </div>
@@ -113,12 +111,13 @@ const createNewProject = (f: Event) => {
                 const response = await axiosInstance.post('projects/', formData);
 
                 if (response.status === 201) {
-                    projects.value.push(response.data);
+                    projects.value.unshift(response.data);
                     Swal.fire('Proyecto creado', 'El proyecto ha sido creado exitosamente', 'success');
                 }
             } catch (error) {
                 Swal.fire('Error', 'Ha ocurrido un error al crear el proyecto', 'error');
             } finally {
+                newProjectModalIsOpen.value = false;
                 alertLoading.hide();
             }
         }

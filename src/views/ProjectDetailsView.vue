@@ -17,6 +17,12 @@
         <h2 class="text-xl font-bold mt-8 mb-4">Revisiones del Proyecto</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white shadow-md rounded-lg p-6 flex items-center justify-center hover:opacity-75 cursor-pointer" @click="newRevisionModalIsOpen = true">
+                <span class="py-2 px-4 rounded-full font-bold">
+                    + Agregar Nueva Revisión
+                </span>
+            </div>
+
             <div v-for="revision in revisions" :key="revision.uuid" class="bg-white border-2 shadow-md rounded-lg p-6 flex flex-col justify-between hover:shadow-lg hover:border-purple-200">
                 <h2 class="text-xl font-semibold mb-2">{{ `Revision No. ${revision.attempt}` }}</h2>
 
@@ -31,12 +37,6 @@
                         </router-link>
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-white shadow-md rounded-lg p-6 flex items-center justify-center hover:opacity-75 cursor-pointer" @click="newRevisionModalIsOpen = true">
-                <span class="py-2 px-4 rounded-full font-bold">
-                    + Agregar Nueva Revisión
-                </span>
             </div>
         </div>
         
@@ -113,7 +113,7 @@ const addRevision = async (f: Event) => {
         });
 
         Swal.fire('Revisión Agregada', 'La revisión ha sido agregada exitosamente', 'success');
-        revisions.value.push(response.data);
+        revisions.value.unshift(response.data);
         newRevisionModalIsOpen.value = false;
     } catch (error) {
         Swal.fire('Error', 'Ocurrió un error al agregar la revisión', 'error');

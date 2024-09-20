@@ -2,13 +2,13 @@
     <div class="flex h-full bg-gray-100" v-if="revisionDetailed">
         <div class="flex-1 flex flex-col p-4 bg-white w-full align-center">
             <div class="flex items-center mb-4 gap-6" >
-                <ArrowLeftIcon class="w-6 h-6 text-purple-500 cursor-pointer" @click="router.back()"/>
+                <ArrowLeftIcon class="w-6 h-6 text-purple-500 cursor-pointer" @click="goBack"/>
 
                 <h1 class="text-2xl font-bold ml-2">Revisión # {{ revisionDetailed.attempt }}</h1>
             </div>
 
             <div class="w-full flex justify-center">
-                <div class="w-fit h-fit max-w-7xl max-h-7xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
+                <div class="w-fit h-fit max-w-5xl max-h-3xl overflow-hidden flex items-center justify-center relative border" @click="handleClick" ref="imageContainer">
                     <img :src="revisionDetailed.file_s3_key" alt="Example Image" class="object-contain"/>
                     
                     <div class="absolute" v-if="newComment.x && newComment.y" :style="{ top: newComment.y + '%', left: newComment.x + '%' }" @click.stop="null"> 
@@ -62,6 +62,7 @@ import { useAlertLoading } from '@/composables/useAlert';
 import Swal from 'sweetalert2';
 import { ArrowLeftIcon } from '@heroicons/vue/16/solid';
 import InputComplete from '@/components/utils/InputComplete.vue';
+import { useUserStore } from '@/stores/user';
 
 interface Comment {
     uuid: string;
@@ -88,6 +89,7 @@ const showComment = ref<{ [key: string]: boolean }>({});
 const newReply = ref<{ [key: string]: string }>({});
 const revisionDetailed = ref<any>(null);
 const allUserComments = ref<Comment[]>([]);
+const userStore = useUserStore();
 
 const revisionUUID = route.params.revisionUUID;
 
@@ -164,7 +166,7 @@ const addComment = (formData: FormData) => {
         image_s3_key: formData.get('image'),
         audio: audioUrl || null,
         audio_s3_key: formData.get('audio'),
-        user: 'current_user',
+        user: userStore,
         x: newComment.value.x,
         y: newComment.value.y,
         reply_to: null,
@@ -203,7 +205,7 @@ const addReply = (parentUuid: string, formData: FormData) => {
             audio_s3_key: formData.get('audio'),
             x: null,
             y: null,
-            user: 'current_user',
+            user: userStore,
             reply_to: parentUuid,
             revision: 'current_revision',
             replies: []
@@ -243,10 +245,11 @@ onMounted(() => {
 const submitRevision = async () => {
     alertLoading.show();
 
-    allUserComments.value.forEach(async (comment) => {
+    for (const comment of allUserComments.value) {
         await addUserComments(comment);
-    });
+    }
 
+    alertLoading.hide();
     Swal.fire('Revisión Guardada', 'La revisión ha sido guardada exitosamente', 'success');
 };
 
@@ -267,6 +270,25 @@ const addUserComments = async (comment: Comment) => {
         });
     } catch (error) {
         Swal.fire('Error', 'Ocurrió un error al guardar la revisión', 'error');
+    }
+}
+
+const goBack = () => {
+    if (allUserComments.value.length > 0) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Si regresas perderás los cambios no guardados',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, regresar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.back();
+            }
+        });
+    } else {
+        router.back();
     }
 }
 </script>
